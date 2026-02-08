@@ -1,27 +1,50 @@
+import { useEffect, useState, useMemo } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { HomeScreen } from "./src/pantallas/home/home";
-import { AutorScreen } from "./src/pantallas/autor/autor";
-import { LibroScreen } from "./src/pantallas/libro/libro";
-import { GeneroScreen } from "./src/pantallas/genero/genero";
-import { AutorFormScreen } from "./src/pantallas/autor/autor-form";
-import { LibroFormScreen } from "./src/pantallas/libro/libro-form";
-import { GeneroFormScreen } from "./src/pantallas/genero/genero-form";
-
-const Stack = createStackNavigator();
+import { AppStack } from "./src/navigation/appStack.js";
+import { AuthStack } from "./src/navigation/authStack";
+import { getToken, saveToken, removeToken } from "./src/services/auth.js";
+import { AuthContext } from "./src/context/AuthContext";
 
 export default function App() {
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const t = await getToken();
+        setToken(t);
+      } catch (error) {
+        console.log("Error getToken:", error);
+        setToken(null);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const auth = useMemo(
+    () => ({
+      token,
+      signIn: async (newToken) => {
+        await saveToken(newToken);
+        setToken(newToken);
+      },
+      signOut: async () => {
+        await removeToken();
+        setToken(null);
+      },
+    }),
+    [token],
+  );
+
+  if (loading) return null;
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} options={{title:"Inicio"}} />
-        <Stack.Screen name="Autor" component={AutorScreen} />
-        <Stack.Screen name="Libro" component={LibroScreen} />
-        <Stack.Screen name="Genero" component={GeneroScreen} />
-        <Stack.Screen name="AutorForm" component={AutorFormScreen} options={{title:"Crear Autor"}}/>
-        <Stack.Screen name="LibroForm" component={LibroFormScreen} options={{title:"Crear Libro"}}/>
-        <Stack.Screen name="GeneroFormScreen" component={GeneroFormScreen} options={{title:"Crear Género"}}/>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthContext.Provider value={auth}>
+      <NavigationContainer>
+        {token ? <AppStack /> : <AuthStack />}
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }
