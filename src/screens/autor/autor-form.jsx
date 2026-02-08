@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Text, View, TextInput, Alert, TouchableOpacity, ScrollView } from "react-native";
-import { Container } from "../../components/container/container";
+import { Container } from "../../components/container/container.jsx";
 import { ENDPOINTS } from '../../config/api.js';
 import { styles } from './autor-form.styles.jsx';
 

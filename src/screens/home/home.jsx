@@ -4,17 +4,6 @@ import { Container } from "../../components/container/container.jsx";
 
 export const HomeScreen = ({ navigation }) => {
     return (
-        // <Container>
-        //     <Text style={styles.texto}>Bienvenido a la pantalla de Home</Text>
-        //     <Button
-        //         onPress={() => navigation.navigate('Autor')}
-        //         title="Ir a Autor"
-        //     />
-        //     <Button
-        //         onPress={() => navigation.navigate('Libro')}
-        //         title="Ir a Libro"
-        //     />
-        // </Container>
         <Container>
             <View style={styles.container}>
                 <View style={styles.header}>

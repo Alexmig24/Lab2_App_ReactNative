@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { Container } from "../../components/container/container.jsx";
 import { ENDPOINTS } from '../../config/api.js';
+import { apiFetch } from '../../services/api.js';
 import { Card } from '../../components/card/card.jsx';
 import { styles } from './libro.styles.jsx';
 
@@ -11,7 +12,7 @@ export const LibroScreen = ({ navigation }) => {
 
     const getLibros = async () => {
         try {
-            const response = await fetch(ENDPOINTS.LIBRO);
+            const response = await apiFetch(ENDPOINTS.LIBRO);
             const json = await response.json();
             setLibros(json);
         } catch (error) {
@@ -28,7 +29,7 @@ export const LibroScreen = ({ navigation }) => {
 
     const eliminarLibro = async (id) => {
         try {
-            const response = await fetch(`${ENDPOINTS.LIBRO}/${id}`, {
+            const response = await apiFetch(`${ENDPOINTS.LIBRO}/${id}`, {
                 method: 'DELETE',
             });
 
